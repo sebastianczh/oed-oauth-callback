@@ -1,12 +1,32 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>OED OAuth Callback Test</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Cache-Control" content="no-store">
+  <title>OED Corppass OAuth callback</title>
 </head>
 <body>
-  <h2>OED OAuth Callback</h2>
-  <p>This is a placeholder callback page.</p>
-  <p>No authentication data is processed or stored here.</p>
+  <h2>Returning to the OED uploader...</h2>
+  <p id="status">Please return to Spyder if this page does not redirect automatically.</p>
+  <script>
+    (() => {
+      // This page MUST be deployed at the EXISTING, registered GitHub Pages
+      // callback URL, and the Python combined uploader must be running first.
+      const query = new URLSearchParams(window.location.search);
+      if (!query.has('state') || (!query.has('code') && !query.has('error'))) {
+        document.getElementById('status').textContent =
+          'No OAuth authorisation result was found in the callback URL.';
+        return;
+      }
+      const callbackQuery = window.location.search;
+      // Remove the one-time code from this tab's history entry.
+      window.history.replaceState(null, '', window.location.pathname);
+      // The browser navigates to the local listener; no third-party
+      // analytics or additional external endpoints are used.
+      window.location.replace('http://127.0.0.1:8765/callback' + callbackQuery);
+    })();
+  </script>
 </body>
 </html>
